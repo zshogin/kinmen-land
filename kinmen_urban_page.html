@@ -1,0 +1,267 @@
+
+
+<!DOCTYPE html>
+<html>
+<head><meta name="viewport" content="initial-scale=1, maximum-scale=1,user-scalable=no" /><title>
+	金門縣都市計畫整合資訊系統
+</title><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" /><link rel="stylesheet" href="//code.jquery.com/ui/1.12.0/themes/smoothness/jquery-ui.css" /><link rel="stylesheet" href="../css/pulib_web_index.css" />
+    <style>
+        iframe {
+            border: 0;
+            margin: 0;
+        }
+
+        #sidebar {
+        }
+
+            #sidebar p {
+                color: #cdcdcd;
+                padding: 20px;
+            }
+
+            #sidebar nav ul {
+                margin: 0;
+                padding: 0;
+            }
+
+                #sidebar nav ul li:first-of-type {
+                    border-top: 1px solid #fff;
+                }
+
+                #sidebar nav ul li {
+                    border-bottom: 1px solid #fff;
+                }
+
+                    #sidebar nav ul li a {
+                        padding: 10px 20px;
+                        display: block;
+                        color: #fff;
+                        text-decoration: none;
+                    }
+
+                        #sidebar nav ul li a:hover {
+                            background: #454545;
+                        }
+
+        .IndustrialDistrictImage {
+            max-height: 100%;
+            max-width: 100%;
+            width: auto;
+            height: auto;
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            margin: auto;
+        }
+        /* 桌機維持 1000px */
+        #MemoModal .modal-content {
+            width: 800px;
+            margin: 30px auto;
+        }
+        /* 手機或小於768px時，寬度 100% */
+        @media (max-width: 1200px) {
+            #MemoModal .modal-dialog {
+                width: 95% !important;
+                margin: 10px auto;
+            }
+            
+            #MemoModal .modal-content {
+                width: 100% !important;
+            }
+        }
+
+
+    </style>
+
+
+    <script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="//code.jquery.com/ui/1.12.0/jquery-ui.min.js" integrity="sha256-eGE6blurk5sHj+rmkfsGYeKyZx3M4bG+ZlFyA7Kns7E=" crossorigin="anonymous"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#sidebarCollapse').on('click', function () {
+                $('#sidebar').toggleClass('active');
+            });
+
+            $("#IndustrialDistrictDialog").dialog({
+                autoOpen: false,
+                dialogClass: "no-close",
+                minHeight: 650,
+                minWidth: 700,
+                buttons: [
+                    {
+                        text: "OK",
+                        click: function () {
+                            $(this).dialog("close");
+                        }
+                    }
+                ]
+            });
+
+            $("#BulletinDialog").dialog({
+                autoOpen: false,
+                //dialogClass: "no-close",
+                minHeight: 200,
+                minWidth: 550,
+                buttons: [
+                    {
+                        text: "OK",
+                        click: function () {
+                            $(this).dialog("close");
+                        }
+                    }
+                ]
+            });
+
+            $('#MemoModal').modal({
+                backdrop: true,
+                keyboard: true
+            });
+
+
+            onResizeWindow();
+        });
+        $(window).resize(function () {
+            onResizeWindow();
+        });
+        function onResizeWindow() {
+
+            // 定義主面版的大小 
+            var viewportwidth;
+            var viewportheight;
+            if (typeof window.innerWidth != 'undefined') {
+                viewportwidth = window.innerWidth;
+                viewportheight = window.innerHeight;
+            }
+            else if (typeof document.documentElement != 'undefined'
+                && typeof document.documentElement.clientWidth !=
+                'undefined' && document.documentElement.clientWidth != 0) {
+                viewportwidth = document.documentElement.clientWidth;
+                viewportheight = document.documentElement.clientHeight;
+            }
+            else {
+                viewportwidth = document.getElementsByTagName('body')[0].clientWidth;
+                viewportheight = document.getElementsByTagName('body')[0].clientHeight;
+            }
+            //主版面大小、位置的控制
+            $("div#main_page").css({ width: "100%", height: viewportheight - 65 });
+            $("#mainFrame").css({ left: '0px', top: '0px', width: "100%", height: viewportheight - 70 });
+
+        }
+        var openIndustrialDistrict = function () {
+
+            if (!$("#IndustrialDistrictDialog").dialog("isOpen"))
+                $("#IndustrialDistrictDialog").dialog("open");
+            else
+                $("#IndustrialDistrictDialog").dialog("close");
+        };
+
+    </script>
+</head>
+<body>
+
+    <div class="wrapper">
+
+        <div id="sidebar">
+            <div style="height: 65px;"></div>
+            <nav>
+                <ul>
+                    <li>
+                        <div><a href="../map/publicMap.aspx" target="mainFrame">地理圖資查詢</a></div>
+                    </li>
+                    <li>
+                        <div><a href="queryCase.aspx" target="mainFrame">主要計畫查詢</a></div>
+                    </li>
+                    <li>
+                        <div><a href="queryDCase.aspx" target="mainFrame">細部計畫查詢</a></div>
+                    </li>
+                    <li>
+                        <div><a href="queryUrbanProgress.aspx" target="mainFrame">案件進度查詢</a></div>
+                    </li>
+                    <li>
+                        <div><a href="meetingSearch.aspx" target="mainFrame">會議紀錄查詢</a></div>
+                    </li>
+                    <li>
+                        <div><a href="member.aspx" target="mainFrame">委員名單查詢</a></div>
+                    </li>
+                    <li>
+                        <div><a href="queryLaw.aspx" target="mainFrame">法規查詢</a></div>
+                    </li>
+                    <li>
+                        <div><a href="queryOtherBulletin.aspx" target="mainFrame">公告查詢</a></div>
+                    </li>
+                    <li>
+                        <div><a href="queryLandPlan.aspx" target="mainFrame">國土計畫查詢</a></div>
+                    </li>
+                    <li>
+                        <div><a href="queryCoast.aspx" target="mainFrame">海岸管理查詢</a></div>
+                    </li>
+                    <li>
+                        <div><a href="queryUnsafeOldBuildingLaw.aspx" target="mainFrame">危老重建查詢</a></div>
+                    </li>
+                    <li>
+                        <div><a href="queryCityRenewal.aspx" target="mainFrame">都市更新查詢</a></div>
+                    </li>
+                    <li>
+                        <div><a href="stake.aspx" target="mainFrame">都計樁位查詢</a></div>
+                    </li>
+                    <li>
+                        <div id="IndustrialDistrict"><a href="#" onclick="openIndustrialDistrict()">甲乙工業區展示</a></div>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+
+        <div id="content">
+            <div id="top_bar">
+
+                <div id="back" onclick="parent.window.location='../Default.aspx'">
+                </div>
+
+                <table id="top_bar_table" style="width: 100%; max-width: 800px;">
+                    <tr>
+                        <td style="width: 50px;">
+                            <button type="button" id="sidebarCollapse">選單</button></td>
+                        <td id="logo"></td>
+                    </tr>
+                </table>
+
+            </div>
+            <div id="main_page">
+                <iframe src="../map/publicMap.aspx" name="mainFrame" id="mainFrame" style=""></iframe>
+            </div>
+
+        </div>
+    </div>
+    <div id="IndustrialDistrictDialog" title="甲乙工業區展示">
+        <img class="IndustrialDistrictImage" src="IndustrialDistrict.aspx">
+    </div>
+    <div id="BulletinDialog" title="系統公告">
+        <h3>【門牌定位系統維修中，造成不便敬請見諒】</h3>
+    </div>
+    <div class="modal fade" id="MemoModal" tabindex="-1" rold="dialog">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title">備註內容</h4>
+                </div>
+                <div class="modal-body">
+                    <span id="memo" class="noprint" style="color: #ff0000; z-index: 50;">
+                        【註1：本系統呈現之土地使用分區、地籍面積、權屬資料、位置等相關圖資僅供參考，實際資料仍應依各主管單位所核發之證明文件為準。使用者不得將本系統所提供之資料內容或查詢結果作為任何形式之依據或主張。】<br/>
+                        【註2：公私有地圖層中圖中標示為公有地者，部分為公產單位持有部分，請點該筆土地查看是否為部分持有。】<br/>
+                        【註3：若無法顯示最新正射影像圖層，請清除瀏覽器快取】
+                    </span>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">關閉</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

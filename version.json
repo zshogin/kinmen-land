@@ -1,0 +1,7 @@
+{
+  "version": "v0.10_20261118",
+  "build_date": "2026-11-18",
+  "description": "金門地政雲整合資訊查詢系統 (Kinmen Land Cloud Service)",
+  "author": "zshogin",
+  "target_platform": "Synology DS1019+ (Docker) & GitHub"
+}

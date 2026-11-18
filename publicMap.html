@@ -1,0 +1,1047 @@
+
+
+<!DOCTYPE html>
+<html>
+<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><meta http-equiv="X-UA-Compatible" content="IE=edge" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>
+	金門縣都市計畫整合資訊系統
+</title><link href="css/jquery.mobile.custom.structure.min.css" rel="stylesheet" /><link rel="stylesheet" href="https://js.arcgis.com/3.21/dijit/themes/claro/claro.css" /><link rel="stylesheet" href="https://js.arcgis.com/3.21/dojox/form/resources/RangeSlider.css" /><link rel="stylesheet" href="https://js.arcgis.com/3.21/dojox/widget/ColorPicker/ColorPicker.css" /><link rel="stylesheet" href="https://js.arcgis.com/3.21/esri/css/esri.css" /><link rel="stylesheet" href="https://code.jquery.com/ui/1.11.4/themes/redmond/jquery-ui.css" type="text/css" /><link rel="stylesheet" href="https://cdn.datatables.net/1.10.15/css/jquery.dataTables.min.css" type="text/css" /><link href="js/colorpicker-master/css/evol-colorpicker.min.css" rel="stylesheet" /><link href="js/HemantNegi-jquery.sumoselect-59ccb02/sumoselect.css" rel="stylesheet" /><link href="css/alertify.core.css" rel="stylesheet" /><link href="css/alertify.default.css" rel="stylesheet" /><link rel="stylesheet" href="css/bootstrap.min.css" /><link rel="stylesheet" href="css/slidebars.css?ver=20250820" /><link rel="stylesheet" href="css/canvas.css" /><link rel="stylesheet" href="css/f_styles.css" /><link rel="stylesheet" href="css/simple-grid.css" /><link id="iphonestyle" rel="Stylesheet" /><link id="dynamicStyleSheet" rel="Stylesheet" /><link rel="stylesheet" href="css/jyStyleSheet.css" />
+
+    <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <script type="text/javascript" src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="js/flat_script.js"></script>
+    <script type="text/javascript" src="js/jquery.blockUI.js"></script>
+    <script type="text/javascript" src="js/jquery.dialogextend.min.js"></script>
+    <script type="text/javascript" src="js/jquery.ui.touch-punch.min.js"></script>
+    <script type="text/javascript" src="js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="js/dataTables.fixedColumns.min.js"></script>
+    <script type="text/javascript" src="js/proj4js-compressed.js"></script>
+    <script src="js/alertify.min.js"></script>
+    <script src="js/colorpicker-master/js/evol-colorpicker.min.js"></script>
+    <script src="js/HemantNegi-jquery.sumoselect-59ccb02/jquery.sumoselect.min.js"></script>
+    <script src="js/jquery.mobile.custom.min.js"></script>
+
+    <script type="text/javascript">
+        var dojoConfig = {
+            parseOnLoad: true,
+            packages: [{
+                name: "js",
+                location: location.pathname.replace(/\/[^/]*$/, '') + '/js'
+            }]
+        };
+        var layerToken = "IG6jTnEKvyfte_7OYS1n0z_nJNb_cwQWvrAjhCRjFd7ZjygHHjmHnN4-SSRxt1h1";
+    </script>
+
+    <script type="text/javascript" src="https://js.arcgis.com/3.21/"></script>
+    <script type="text/javascript" src="js/jinit.js?202611180048"></script>
+    <script type="text/javascript" src="js/jMain.js?202611180048"></script>
+    <script type="text/javascript" src="js/jFunc.js?202611180048"></script>
+
+    <script type="text/javascript">
+        var USERNAME = "";
+        var USERSHOWNAME = "";
+        var M_CONFIG = [
+  {
+    "UID": 1041,
+    "LAYERSVID": "07",
+    "TYPE": 4,
+    "NAME": "行政區",
+    "LAYERNAME": "AdmiLayer",
+    "DESCINFO": "都市計劃整合系統地圖",
+    "CONNUSERID": null,
+    "CONNPSWD": null,
+    "CONNURL": "https://mapcloud.kinmen.gov.tw/arcgiswa/rest/services/KIM/admi_area/MapServer/0",
+    "METADATAURL": null,
+    "UPTDATE": "2014-09-26T14:34:52",
+    "STATUS": "1",
+    "OFFDATE": null,
+    "OPACITY": 1.0,
+    "VISIBLE": false,
+    "AUTHORIZATION": 0
+  },
+  {
+    "UID": 1044,
+    "LAYERSVID": "08",
+    "TYPE": 4,
+    "NAME": "門牌",
+    "LAYERNAME": "DoorLayer",
+    "DESCINFO": "都市計劃整合系統地圖",
+    "CONNUSERID": null,
+    "CONNPSWD": null,
+    "CONNURL": "https://mapcloud.kinmen.gov.tw/arcgiswa/rest/services/KIM/address/MapServer/0",
+    "METADATAURL": null,
+    "UPTDATE": "2014-09-26T14:34:52",
+    "STATUS": "1",
+    "OFFDATE": null,
+    "OPACITY": 1.0,
+    "VISIBLE": false,
+    "AUTHORIZATION": 0
+  },
+  {
+    "UID": 1042,
+    "LAYERSVID": "09",
+    "TYPE": 4,
+    "NAME": "地籍圖",
+    "LAYERNAME": "LandLayer",
+    "DESCINFO": "都市計劃整合系統地圖",
+    "CONNUSERID": null,
+    "CONNPSWD": null,
+    "CONNURL": "https://mapcloud.kinmen.gov.tw/arcgiswa/rest/services/KIM/LAND_SDE/MapServer/1",
+    "METADATAURL": null,
+    "UPTDATE": "2014-09-26T14:34:52",
+    "STATUS": "1",
+    "OFFDATE": null,
+    "OPACITY": 1.0,
+    "VISIBLE": false,
+    "AUTHORIZATION": 1
+  },
+  {
+    "UID": 1053,
+    "LAYERSVID": "10",
+    "TYPE": 4,
+    "NAME": "文化資產",
+    "LAYERNAME": "HistoricSiteLayer",
+    "DESCINFO": "都市計劃整合系統地圖",
+    "CONNUSERID": null,
+    "CONNPSWD": null,
+    "CONNURL": "https://mapcloud.kinmen.gov.tw/arcgiswa/rest/services/KIM/金門古蹟/MapServer/0,1,2,3",
+    "METADATAURL": null,
+    "UPTDATE": "2021-01-11T00:00:00",
+    "STATUS": "1",
+    "OFFDATE": null,
+    "OPACITY": 1.0,
+    "VISIBLE": false,
+    "AUTHORIZATION": 0
+  },
+  {
+    "UID": 1062,
+    "LAYERSVID": "11",
+    "TYPE": 4,
+    "NAME": "公私有地分布圖",
+    "LAYERNAME": "Landpri",
+    "DESCINFO": "都市計劃整合系統地圖",
+    "CONNUSERID": null,
+    "CONNPSWD": null,
+    "CONNURL": "https://mapcloud.kinmen.gov.tw/arcgiswa/rest/services/KIM/LAND_SDE/MapServer/0",
+    "METADATAURL": null,
+    "UPTDATE": "2025-04-09T00:00:00",
+    "STATUS": "1",
+    "OFFDATE": null,
+    "OPACITY": 1.0,
+    "VISIBLE": false,
+    "AUTHORIZATION": 0
+  },
+  {
+    "UID": 1068,
+    "LAYERSVID": "12",
+    "TYPE": 4,
+    "NAME": "主要計畫使用分區",
+    "LAYERNAME": "MuplanLuseLayer",
+    "DESCINFO": "都市計劃整合系統地圖",
+    "CONNUSERID": null,
+    "CONNPSWD": null,
+    "CONNURL": "https://mapcloud.kinmen.gov.tw/arcgiswa/rest/services/金門主計圖_20260706/MapServer/",
+    "METADATAURL": null,
+    "UPTDATE": "2025-07-18T00:00:00",
+    "STATUS": "1",
+    "OFFDATE": null,
+    "OPACITY": 0.5,
+    "VISIBLE": false,
+    "AUTHORIZATION": 0
+  },
+  {
+    "UID": 1045,
+    "LAYERSVID": "13",
+    "TYPE": 4,
+    "NAME": "細部計畫使用分區",
+    "LAYERNAME": "LuseLayer",
+    "DESCINFO": "都市計劃整合系統地圖",
+    "CONNUSERID": null,
+    "CONNPSWD": null,
+    "CONNURL": "https://mapcloud.kinmen.gov.tw/arcgiswa/rest/services/KIM/URBAN_AINO/MapServer/0,1",
+    "METADATAURL": null,
+    "UPTDATE": "2014-09-26T14:34:52",
+    "STATUS": "1",
+    "OFFDATE": null,
+    "OPACITY": 0.5,
+    "VISIBLE": true,
+    "AUTHORIZATION": 0
+  },
+  {
+    "UID": 1065,
+    "LAYERSVID": "14",
+    "TYPE": 4,
+    "NAME": "細部計畫範圍線",
+    "LAYERNAME": "DuplanRangeLayer",
+    "DESCINFO": "都市計劃整合系統地圖",
+    "CONNUSERID": null,
+    "CONNPSWD": null,
+    "CONNURL": "https://mapcloud.kinmen.gov.tw/arcgiswa/rest/services/KIM/%E9%87%91%E9%96%80%E7%B4%B0%E8%A8%88%E7%AF%84%E5%9C%8D/MapServer/0",
+    "METADATAURL": null,
+    "UPTDATE": "2025-07-18T00:00:00",
+    "STATUS": "1",
+    "OFFDATE": null,
+    "OPACITY": 1.0,
+    "VISIBLE": false,
+    "AUTHORIZATION": 0
+  },
+  {
+    "UID": 1067,
+    "LAYERSVID": "15",
+    "TYPE": 4,
+    "NAME": "整體開發地區",
+    "LAYERNAME": "OverallLayer",
+    "DESCINFO": "都市計劃整合系統地圖",
+    "CONNUSERID": null,
+    "CONNPSWD": null,
+    "CONNURL": "https://mapcloud.kinmen.gov.tw/arcgiswa/rest/services/KIM/%E9%87%91%E9%96%80%E6%95%B4%E9%AB%94%E9%96%8B%E7%99%BC%E5%8D%80/MapServer/0",
+    "METADATAURL": null,
+    "UPTDATE": "2025-07-18T00:00:00",
+    "STATUS": "1",
+    "OFFDATE": null,
+    "OPACITY": 1.0,
+    "VISIBLE": false,
+    "AUTHORIZATION": 0
+  },
+  {
+    "UID": 1066,
+    "LAYERSVID": "16",
+    "TYPE": 4,
+    "NAME": "附帶條件地區",
+    "LAYERNAME": "AppendLayer",
+    "DESCINFO": "都市計劃整合系統地圖",
+    "CONNUSERID": null,
+    "CONNPSWD": null,
+    "CONNURL": "https://mapcloud.kinmen.gov.tw/arcgiswa/rest/services/KIM/%E9%87%91%E9%96%80%E9%99%84%E5%B8%B6%E6%A2%9D%E4%BB%B6%E5%8D%80/MapServer/0",
+    "METADATAURL": null,
+    "UPTDATE": "2025-07-18T00:00:00",
+    "STATUS": "1",
+    "OFFDATE": null,
+    "OPACITY": 1.0,
+    "VISIBLE": false,
+    "AUTHORIZATION": 0
+  },
+  {
+    "UID": 1063,
+    "LAYERSVID": "17",
+    "TYPE": 4,
+    "NAME": "容積移轉送出基地",
+    "LAYERNAME": "CaseGivenLayer",
+    "DESCINFO": "都市計劃整合系統地圖",
+    "CONNUSERID": null,
+    "CONNPSWD": null,
+    "CONNURL": "https://mapcloud.kinmen.gov.tw/arcgiswa/rest/services/KIM/%E5%AE%B9%E7%A9%8D%E7%A7%BB%E8%BD%89%E5%9F%BA%E5%9C%B0/MapServer/0",
+    "METADATAURL": null,
+    "UPTDATE": "2025-07-21T00:00:00",
+    "STATUS": "1",
+    "OFFDATE": null,
+    "OPACITY": 1.0,
+    "VISIBLE": false,
+    "AUTHORIZATION": 0
+  },
+  {
+    "UID": 1064,
+    "LAYERSVID": "18",
+    "TYPE": 4,
+    "NAME": "容積移轉接受基地",
+    "LAYERNAME": "CaseTakenLayer",
+    "DESCINFO": "都市計劃整合系統地圖",
+    "CONNUSERID": null,
+    "CONNPSWD": null,
+    "CONNURL": "https://mapcloud.kinmen.gov.tw/arcgiswa/rest/services/KIM/%E5%AE%B9%E7%A9%8D%E7%A7%BB%E8%BD%89%E5%9F%BA%E5%9C%B0/MapServer/1",
+    "METADATAURL": null,
+    "UPTDATE": "2025-07-21T00:00:00",
+    "STATUS": "1",
+    "OFFDATE": null,
+    "OPACITY": 1.0,
+    "VISIBLE": false,
+    "AUTHORIZATION": 0
+  },
+  {
+    "UID": 1060,
+    "LAYERSVID": "19",
+    "TYPE": 1,
+    "NAME": "道路路網",
+    "LAYERNAME": "Road_Map_WMS",
+    "DESCINFO": "都市計劃整合系統地圖",
+    "CONNUSERID": "ROAD",
+    "CONNPSWD": null,
+    "CONNURL": "https://wms.nlsc.gov.tw/wms",
+    "METADATAURL": null,
+    "UPTDATE": "2024-01-15T14:29:59.607",
+    "STATUS": "1",
+    "OFFDATE": null,
+    "OPACITY": 1.0,
+    "VISIBLE": false,
+    "AUTHORIZATION": 0
+  },
+  {
+    "UID": 1057,
+    "LAYERSVID": "20",
+    "TYPE": 4,
+    "NAME": "道路路寬",
+    "LAYERNAME": "RoadWidthLayer",
+    "DESCINFO": "都市計劃整合系統地圖",
+    "CONNUSERID": null,
+    "CONNPSWD": null,
+    "CONNURL": "https://mapcloud.kinmen.gov.tw/arcgiswa/rest/services/KIM/road_width_type/MapServer/0",
+    "METADATAURL": null,
+    "UPTDATE": "2022-08-22T00:00:00",
+    "STATUS": "1",
+    "OFFDATE": null,
+    "OPACITY": 1.0,
+    "VISIBLE": false,
+    "AUTHORIZATION": 0
+  },
+  {
+    "UID": 1043,
+    "LAYERSVID": "21",
+    "TYPE": 4,
+    "NAME": "重要地標",
+    "LAYERNAME": "LMarkLayer",
+    "DESCINFO": "都市計劃整合系統地圖",
+    "CONNUSERID": null,
+    "CONNPSWD": null,
+    "CONNURL": "https://mapcloud.kinmen.gov.tw/arcgiswa/rest/services/KIM/landmark/MapServer/1",
+    "METADATAURL": null,
+    "UPTDATE": "2014-09-26T14:34:52",
+    "STATUS": "1",
+    "OFFDATE": null,
+    "OPACITY": 1.0,
+    "VISIBLE": false,
+    "AUTHORIZATION": 0
+  },
+  {
+    "UID": 1061,
+    "LAYERSVID": "22",
+    "TYPE": 4,
+    "NAME": "山坡地",
+    "LAYERNAME": "Hill",
+    "DESCINFO": "都市計劃整合系統地圖",
+    "CONNUSERID": null,
+    "CONNPSWD": null,
+    "CONNURL": "https://mapcloud.kinmen.gov.tw/arcgiswa/rest/services/KIM/Hillside/MapServer/",
+    "METADATAURL": null,
+    "UPTDATE": "2024-08-02T00:00:00",
+    "STATUS": "1",
+    "OFFDATE": null,
+    "OPACITY": 1.0,
+    "VISIBLE": false,
+    "AUTHORIZATION": 0
+  }
+]         
+        var M_TOKEN = "IG6jTnEKvyfte_7OYS1n0z_nJNb_cwQWvrAjhCRjFd7ZjygHHjmHnN4-SSRxt1h1"
+        dojo.ready(function () { init(); });
+    </script>
+
+    <!--[if IE]>
+		<script src="http://libs.useso.com/js/html5shiv/3.7/html5shiv.min.js"></script>
+	<![endif]-->
+
+</head>
+<body class="claro">
+
+    <!--查詢測量分頁選單-->
+    <div id='cssmenu' class="noprint">
+        <ul>
+            <li><a id="alink" href='javascript:;' onclick="openSearchPanel();">
+                <table>
+                    <tr>
+                        <td>
+                            <img src="images/search.png" class="menuicon" /></td>
+                        <td>快速定位</td>
+                    </tr>
+                </table>
+            </a></li>
+            <li><a id="overlink" href='javascript:;' onclick="openLayersPanel();">
+                <table>
+                    <tr>
+                        <td>
+                            <img src="images/basemap.png" class="menuicon" /></td>
+                        <td>圖層套疊</td>
+                    </tr>
+                </table>
+            </a></li>
+            <li><a id="distlink" href='javascript:;' onclick="openMeasurePanel();">
+                <table>
+                    <tr>
+                        <td>
+                            <img src="images/Measurement.png" class="menuicon" /></td>
+                        <td>量測工具</td>
+                    </tr>
+                </table>
+            </a></li>
+            <li><a id="tool_identify" href='javascript:;' onclick="checkDoIdentify();">
+                <table>
+                    <tr>
+                        <td>
+                            <img src="images/intersect.png" class="menuicon" /></td>
+                        <td>土地查詢</td>
+                    </tr>
+                </table>
+            </a></li>
+            <li><a id="tool_identify_landuse" href='javascript:;' onclick="checkDoIdentifyLanduse();">
+                <table>
+                    <tr>
+                        <td>
+                            <img src="images/map.png" class="menuicon" /></td>
+                        <td>分區面積查詢</td>
+                    </tr>
+                </table>
+            </a></li>
+            <li><a id="tool_print" href='javascript:;' onclick="doPrint();">
+                <table>
+                    <tr>
+                        <td>
+                            <img src="images/print_44.png" class="menuicon" /></td>
+                        <td>列印</td>
+                    </tr>
+                </table>
+            </a></li>
+            <li><a id="tool_location" href='javascript:;' onclick="getLocation();">
+                <table>
+                    <tr>
+                        <td>
+                            <img src="images/Location.png" class="menuicon" /></td>
+                        <td>現在位置</td>
+                    </tr>
+                </table>
+            </a></li>
+        </ul>
+    </div>
+
+    <!--地圖-->
+    <div id="mapDiv">
+        <span id="info" class="noprint" style="position: absolute; left: 15px; bottom: 5px; color: #000; z-index: 50;"></span>
+        <span id="scaleinfo" class="noprint" style="position: absolute; left: 20px; top: 60px; color: #000; z-index: 50;">1:100000 </span>
+        <span id="Span1" style="position: absolute; left: 210px; bottom: 5px; z-index: 50;">
+            <img id="busyimg" alt="Settings" src="images/loading1.gif" title="讀取中" style="display: block" />
+        </span>
+        <div id="swipeDiv"></div>
+        <img id="loadingImg" src="../images/loading.gif" style="position: absolute; right: 200px; top: 200px; z-index: 100; visibility: hidden;" />
+    </div>
+
+    <!--工具列-->
+    <div class="divToolsHeader noprint">
+        <button class="grouptoolsbutton" id="btngoogleview" onclick="toolstreetview()" title="Google街景">
+            <img src="images/gsv_28.png" />
+        </button>
+        <br />
+        <button class="grouptoolsbutton" id="btntoolclean" onclick="toolearse()" title="橡皮擦">
+            <img src="images/eraser_A_44.png" />
+        </button>
+    </div>
+
+    <!--查詢測量分頁-->
+    <div off-canvas="sb-1 right overlay sb-width-wide">
+        <div class="panel-title">快速定位</div>
+        <a href="javascript:;" title="關閉" data-rel="close" class="panel-close-button close-any">
+            <img src="Images/remove_24.png" alt="關閉" /></a>
+        <div class="panel-sbody" style="font-size: 19px !important;">
+            <div class="gcontainer">
+                <div class="row">
+                    <div class="col-4 right">
+                        定位方式：
+                    </div>
+                    <div class="col-8">
+                        <select id="selZoomType" class="width100p" onchange="toggleZoomPanel()">
+                            <option value="1">鄉鎮定位</option>
+                            <option value="2">道路定位</option>
+                            <option value="8">交叉路口定位</option>
+                            <option value="3">門牌定位</option>
+                            <option value="4">地標定位</option>
+                            <option value="5">地籍定位</option>
+                            <option value="6">分區定位</option>
+                            <option value="7">坐標定位</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <hr />
+            <div id="zoom1Div">
+                <div class="gcontainer">
+                    <div class="row">
+                        <div class="col-4 right">
+                            鄉鎮：
+                        </div>
+                        <div class="col-8">
+                            <select id="selZoom1Town" class="width100p">
+                                <option value="">請選擇</option>
+                                <option value="2">金沙鎮</option>
+                                <option value="1">金城鎮</option>
+                                <option value="3">金湖鎮</option>
+                                <option value="4">金寧鄉</option>
+                                <option value="5">烈嶼鄉</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-4 right">
+                        </div>
+                        <div class="col-8">
+                            <input id="btnZoom1Query" type="button" value="定位" onclick="QueryZoom1();" />
+                        </div>
+                    </div>
+                </div>
+
+                <div id="zoom1Result" class="querymenuresult"></div>
+            </div>
+            <div id="zoom2Div" class="hiddenDiv">
+                <div class="gcontainer">
+                    <div class="row">
+                        <div class="col-4 right">
+                            關鍵字：
+                        </div>
+                        <div class="col-6">
+                            <input id="txtZoom2Road" type="text" class="width100p" />
+                        </div>
+                        <div class="col-2 right">
+                            <input id="btnZoom2Search" type="button" value="搜尋" onclick="GetRoadList();" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-4 right">
+                            路名：
+                        </div>
+                        <div class="col-8">
+                            <select name="selZoom2Road" id="selZoom2Road" class="width100p">
+	<option value="">請選擇</option>
+	<option value="三民路">三民路</option>
+	<option value="三多路">三多路</option>
+	<option value="下莊中興路">下莊中興路</option>
+	<option value="下莊光武路">下莊光武路</option>
+	<option value="下莊新生街">下莊新生街</option>
+	<option value="士校路">士校路</option>
+	<option value="大山路">大山路</option>
+	<option value="大學路">大學路</option>
+	<option value="中山路">中山路</option>
+	<option value="中正路">中正路</option>
+	<option value="中興街">中興街</option>
+	<option value="中興路">中興路</option>
+	<option value="中環路">中環路</option>
+	<option value="五福街">五福街</option>
+	<option value="仁愛街">仁愛街</option>
+	<option value="公園路">公園路</option>
+	<option value="太湖路一段">太湖路一段</option>
+	<option value="太湖路二段">太湖路二段</option>
+	<option value="太湖路三段">太湖路三段</option>
+	<option value="市港路">市港路</option>
+	<option value="民生路">民生路</option>
+	<option value="民族路">民族路</option>
+	<option value="民權路">民權路</option>
+	<option value="玉章路">玉章路</option>
+	<option value="光武路">光武路</option>
+	<option value="光前路">光前路</option>
+	<option value="光華路一段">光華路一段</option>
+	<option value="光華路二段">光華路二段</option>
+	<option value="成功路">成功路</option>
+	<option value="自強路">自強路</option>
+	<option value="西海路一段">西海路一段</option>
+	<option value="西海路二段">西海路二段</option>
+	<option value="西海路三段">西海路三段</option>
+	<option value="西園路">西園路</option>
+	<option value="伯玉路一段">伯玉路一段</option>
+	<option value="伯玉路二段">伯玉路二段</option>
+	<option value="伯玉路三段">伯玉路三段</option>
+	<option value="伯玉路五段">伯玉路五段</option>
+	<option value="伯玉路四段">伯玉路四段</option>
+	<option value="沙青路">沙青路</option>
+	<option value="和平街">和平街</option>
+	<option value="林堡路">林堡路</option>
+	<option value="林森路">林森路</option>
+	<option value="林湖路">林湖路</option>
+	<option value="武德新莊自強路">武德新莊自強路</option>
+	<option value="金山路">金山路</option>
+	<option value="金城新村1巷">金城新村1巷</option>
+	<option value="金城新村2巷">金城新村2巷</option>
+	<option value="金城新村3巷">金城新村3巷</option>
+	<option value="金城新村4巷">金城新村4巷</option>
+	<option value="金城新村5巷">金城新村5巷</option>
+	<option value="金城新村6巷">金城新村6巷</option>
+	<option value="金城新村7巷">金城新村7巷</option>
+	<option value="金城新莊1巷">金城新莊1巷</option>
+	<option value="金城新莊2巷">金城新莊2巷</option>
+	<option value="金城新莊3巷">金城新莊3巷</option>
+	<option value="金城新莊4巷">金城新莊4巷</option>
+	<option value="金城新莊5巷">金城新莊5巷</option>
+	<option value="金城新莊6巷">金城新莊6巷</option>
+	<option value="金剛戰備道">金剛戰備道</option>
+	<option value="金港路">金港路</option>
+	<option value="信義路">信義路</option>
+	<option value="前港路">前港路</option>
+	<option value="南山路">南山路</option>
+	<option value="島東路一段">島東路一段</option>
+	<option value="桃園路">桃園路</option>
+	<option value="浦華路">浦華路</option>
+	<option value="珠水路">珠水路</option>
+	<option value="珠浦北路">珠浦北路</option>
+	<option value="珠浦西路">珠浦西路</option>
+	<option value="珠浦東路">珠浦東路</option>
+	<option value="珠浦南路">珠浦南路</option>
+	<option value="高陽路">高陽路</option>
+	<option value="浯江北堤路">浯江北堤路</option>
+	<option value="浯江街">浯江街</option>
+	<option value="浯江路">浯江路</option>
+	<option value="國中路">國中路</option>
+	<option value="國順街">國順街</option>
+	<option value="莒光路">莒光路</option>
+	<option value="莒光路一段">莒光路一段</option>
+	<option value="頂林路">頂林路</option>
+	<option value="勝利路">勝利路</option>
+	<option value="博愛街">博愛街</option>
+	<option value="富康一村1巷">富康一村1巷</option>
+	<option value="富康一村2巷">富康一村2巷</option>
+	<option value="富康一村3巷">富康一村3巷</option>
+	<option value="富康一村4巷">富康一村4巷</option>
+	<option value="富康一村5巷">富康一村5巷</option>
+	<option value="富康一村6巷">富康一村6巷</option>
+	<option value="富康一村7巷">富康一村7巷</option>
+	<option value="富康一村8巷">富康一村8巷</option>
+	<option value="富康一村9巷">富康一村9巷</option>
+	<option value="復興西路">復興西路</option>
+	<option value="復興街">復興街</option>
+	<option value="復興路">復興路</option>
+	<option value="復興路一段">復興路一段</option>
+	<option value="菜市場路">菜市場路</option>
+	<option value="陽沙路">陽沙路</option>
+	<option value="黃海路">黃海路</option>
+	<option value="慈湖路一段">慈湖路一段</option>
+	<option value="慈湖路二段">慈湖路二段</option>
+	<option value="慈湖路三段">慈湖路三段</option>
+	<option value="新興街">新興街</option>
+	<option value="經武路">經武路</option>
+	<option value="寧湖路">寧湖路</option>
+	<option value="模範街">模範街</option>
+	<option value="盤果路">盤果路</option>
+	<option value="賢城路">賢城路</option>
+	<option value="擎天路">擎天路</option>
+	<option value="濱海大道">濱海大道</option>
+	<option value="環中路">環中路</option>
+	<option value="環島北路">環島北路</option>
+	<option value="環島北路一段">環島北路一段</option>
+	<option value="環島北路二段">環島北路二段</option>
+	<option value="環島北路三段">環島北路三段</option>
+	<option value="環島北路四段">環島北路四段</option>
+	<option value="環島西路">環島西路</option>
+	<option value="環島西路一段">環島西路一段</option>
+	<option value="環島西路二段">環島西路二段</option>
+	<option value="環島東路一段">環島東路一段</option>
+	<option value="環島東路二段">環島東路二段</option>
+	<option value="環島東路三段">環島東路三段</option>
+	<option value="環島東路五段">環島東路五段</option>
+	<option value="環島東路四段">環島東路四段</option>
+	<option value="環島南路一段">環島南路一段</option>
+	<option value="環島南路二段">環島南路二段</option>
+	<option value="環島南路三段">環島南路三段</option>
+	<option value="環島南路五段">環島南路五段</option>
+	<option value="環島南路四段">環島南路四段</option>
+	<option value="雙瓊路">雙瓊路</option>
+	<option value="瓊安路">瓊安路</option>
+	<option value="瓊林街">瓊林街</option>
+	<option value="瓊徑路">瓊徑路</option>
+	<option value="瓊義路">瓊義路</option>
+	<option value="蘭陽路">蘭陽路</option>
+</select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 center">
+                            <input id="btnZoom2Query" type="button" value="定位" onclick="QueryZoom2();" />
+                            <input id="btnZoom2Clear" type="button" value="清除" onclick="ClearZoom2();" />
+                        </div>
+                    </div>
+                </div>
+                <div id="zoom2Result" class="querymenuresult"></div>
+            </div>
+            <div id="zoom3Div" class="hiddenDiv">
+                <div class="gcontainer">
+                    <div class="row">
+                        <div class="col-4 right">
+                            鄉鎮：
+                        </div>
+                        <div class="col-8">
+                            <select id="selZoom3Town" class="width100p" onchange="GetZoom3Road()">
+                                <option value="">請選擇</option>
+                                <option value="金沙鎮">金沙鎮</option>
+                                <option value="金城鎮">金城鎮</option>
+                                <option value="金湖鎮">金湖鎮</option>
+                                <option value="金寧鄉">金寧鄉</option>
+                                <option value="烈嶼鄉">烈嶼鄉</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-4 right">
+                            門牌：
+                        </div>
+                        <div class="col-8">
+                            <select id="selZoom3Road" class="width150">
+                            </select>路<br />
+                            <br />
+                            <select id="selZoom3Lane" class="width150">
+                            </select>巷<br />
+                            <br />
+                            <select id="selZoom3Alley" class="width150">
+                            </select>弄<br />
+                            <br />
+                            <select id="selZoom3Door" class="width150">
+                            </select>號<br />
+                            <br />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 center">
+                            <input id="btnZoom3Query" type="button" value="查詢" onclick="QueryZoom3();" />
+                            <input id="btnZoom3Clear" type="button" value="清除" onclick="ClearZoom3();" />
+                        </div>
+                    </div>
+                </div>
+                <div id="zoom3Result" class="querymenuresult"></div>
+            </div>
+            <div id="zoom8Div" class="hiddenDiv">
+                <div class="gcontainer">
+                    <div class="row">
+                        <div class="col-4 right">
+                            鄉鎮：
+                        </div>
+                        <div class="col-8">
+                            <select id="selZoom8Town" class="width100p" onchange="GetZoom8Road()">
+                                <option value="">請選擇</option>
+                                <option value="E0902002003">金沙鎮</option>
+                                <option value="E0902001003">金城鎮</option>
+                                <option value="E0902003003">金湖鎮</option>
+                                <option value="E0902004003">金寧鄉</option>
+                                <option value="E0902005003">烈嶼鄉</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-4 right">
+                            道路：
+                        </div>
+                        <div class="col-8">
+                            <select id="selZoom8Road" class="width100p" onchange="GetZoom8Road2()">
+                                <option value="">請選擇</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-4 right">
+                            交叉路口：
+                        </div>
+                        <div class="col-8">
+                            <select id="selZoom8Cross" class="width100p">
+                                <option value="">請選擇</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 center">
+                            <input id="btnZoom8Query" type="button" value="查詢" onclick="QueryZoom8();" />
+                            <input id="btnZoom8Clear" type="button" value="清除" onclick="ClearZoom8();" />
+                        </div>
+                    </div>
+                </div>
+                <div id="zoom8Result" class="querymenuresult"></div>
+            </div>
+            <div id="zoom4Div" class="hiddenDiv">
+                <div class="gcontainer">
+                    <div class="row">
+                        <div class="col-4 right">
+                            主分類：
+                        </div>
+                        <div class="col-8">
+                            <select id="selZoom4MainType" class="width100p" onchange="GetMarkSubClass()">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-4 right">
+                            次分類：
+                        </div>
+                        <div class="col-8">
+                            <select id="selZoom4SubType" class="width100p" onchange="GetMark()">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-4 right">
+                            地標：
+                        </div>
+                        <div class="col-8">
+                            <select id="selZoom4Mark" class="width100p">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 center">
+                            <input id="btnZoom4Query" type="button" value="查詢" onclick="QueryZoom4();" />
+                            <input id="btnZoom4Clear" type="button" value="清除" onclick="ClearZoom4();" />
+                        </div>
+                    </div>
+                    <div id="zoom4Result" class="querymenuresult"></div>
+                </div>
+            </div>
+            <div id="zoom5Div" class="hiddenDiv">
+                <div class="gcontainer">
+                    <div class="row">
+                        <div class="col-4 right">
+                            鄉鎮：
+                        </div>
+                        <div class="col-8">
+                            <select id="selZoom5Town" class="width100p" onchange="getSecbytown('selZoom5Town', 'selZoom5Cada');">
+                                <option value="">請選擇</option>
+                                <option value="金沙鎮">金沙鎮</option>
+                                <option value="金城鎮">金城鎮</option>
+                                <option value="金湖鎮">金湖鎮</option>
+                                <option value="金寧鄉">金寧鄉</option>
+                                <option value="烈嶼鄉">烈嶼鄉</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-4 right">
+                            地段：
+                        </div>
+                        <div class="col-8">
+                            <select name="selZoom5Cada" id="selZoom5Cada" class="width100p">
+	<option value="">請選擇</option>
+</select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-4 right">
+                            地號：
+                        </div>
+                        <div class="col-8">
+                            <input id="txtZoom5Landno" type="text" class="width100p" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 center">
+                        <input id="btnZoom5Query" type="button" value="查詢" onclick="QueryZoom5();" />
+                        <input id="btnZoom5Clear" type="button" value="清除" onclick="ClearZoom5();" />
+                    </div>
+                </div>
+                <div id="zoom5Result" class="querymenuresult"></div>
+            </div>
+            <div id="zoom6Div" class="hiddenDiv">
+                <div class="gcontainer">
+                    <div class="row">
+                        <div class="col-4 right">
+                            使用分區：
+                        </div>
+                        <div class="col-8">
+                            <select name="selZoom6Zone" id="selZoom6Zone" class="width100p">
+	<option value="">請選擇</option>
+	<option value=""></option>
+	<option value="乙種工業區">乙種工業區</option>
+	<option value="人行步道用地">人行步道用地</option>
+	<option value="土石採取專用區">土石採取專用區</option>
+	<option value="工商綜合專用區一(供">工商綜合專用區一(供</option>
+	<option value="工商綜合專用區二(供">工商綜合專用區二(供</option>
+	<option value="工商綜合專用區三(供">工商綜合專用區三(供</option>
+	<option value="工業區">工業區</option>
+	<option value="公共事業用地">公共事業用地</option>
+	<option value="公園用地">公園用地</option>
+	<option value="公園兼供污水處理場用">公園兼供污水處理場用</option>
+	<option value="公園兼供污水處理廠用">公園兼供污水處理廠用</option>
+	<option value="公園兼兒童遊樂場用地">公園兼兒童遊樂場用地</option>
+	<option value="文化產業專用區">文化產業專用區</option>
+	<option value="文教區">文教區</option>
+	<option value="加油站用地">加油站用地</option>
+	<option value="古蹟保存區">古蹟保存區</option>
+	<option value="市場用地">市場用地</option>
+	<option value="甲種工業區">甲種工業區</option>
+	<option value="休閒專用區">休閒專用區</option>
+	<option value="汙水處理廠用地">汙水處理廠用地</option>
+	<option value="污水處理廠用地">污水處理廠用地</option>
+	<option value="自來水廠用地">自來水廠用地</option>
+	<option value="自然村專用區">自然村專用區</option>
+	<option value="行政區">行政區</option>
+	<option value="住宅用地">住宅用地</option>
+	<option value="住宅區">住宅區</option>
+	<option value="車站用地">車站用地</option>
+	<option value="兒童遊樂場">兒童遊樂場</option>
+	<option value="兒童遊樂場用地">兒童遊樂場用地</option>
+	<option value="垃圾掩埋場用地">垃圾掩埋場用地</option>
+	<option value="宗教專用區">宗教專用區</option>
+	<option value="河川用地">河川用地</option>
+	<option value="社教用地">社教用地</option>
+	<option value="社會福利設施專用區">社會福利設施專用區</option>
+	<option value="保存區">保存區</option>
+	<option value="保護區">保護區</option>
+	<option value="風景區">風景區</option>
+	<option value="倉儲批發零售專用區">倉儲批發零售專用區</option>
+	<option value="旅館專用區">旅館專用區</option>
+	<option value="航空站用地">航空站用地</option>
+	<option value="停車場用地">停車場用地</option>
+	<option value="商業區">商業區</option>
+	<option value="國家公園區">國家公園區</option>
+	<option value="產業專用區">產業專用區</option>
+	<option value="第一種住宅區">第一種住宅區</option>
+	<option value="第一種住宅區(附)">第一種住宅區(附)</option>
+	<option value="第一種商業區">第一種商業區</option>
+	<option value="第一種閩南建築專用區">第一種閩南建築專用區</option>
+	<option value="第七種住宅區">第七種住宅區</option>
+	<option value="第二之一種住宅區">第二之一種住宅區</option>
+	<option value="第二之二種商業區">第二之二種商業區</option>
+	<option value="第二之二種商業區(有">第二之二種商業區(有</option>
+	<option value="第二種住宅區">第二種住宅區</option>
+	<option value="第二種商業區">第二種商業區</option>
+	<option value="第二種閩南建築專用區">第二種閩南建築專用區</option>
+	<option value="第三種住宅區">第三種住宅區</option>
+	<option value="第三種住宅區(特)">第三種住宅區(特)</option>
+	<option value="第三種商業區">第三種商業區</option>
+	<option value="第五之一種住宅區">第五之一種住宅區</option>
+	<option value="第五種住宅區">第五種住宅區</option>
+	<option value="第六種住宅區">第六種住宅區</option>
+	<option value="港埠用地">港埠用地</option>
+	<option value="郵政專用區">郵政專用區</option>
+	<option value="園林道路用地">園林道路用地</option>
+	<option value="園道用地">園道用地</option>
+	<option value="溝渠用地">溝渠用地</option>
+	<option value="溝渠用地區">溝渠用地區</option>
+	<option value="農村住宅街廓">農村住宅街廓</option>
+	<option value="農會專用區">農會專用區</option>
+	<option value="農業區">農業區</option>
+	<option value="遊憩用地">遊憩用地</option>
+	<option value="道路用地">道路用地</option>
+	<option value="電力事業用地">電力事業用地</option>
+	<option value="電信專用區">電信專用區</option>
+	<option value="綠地">綠地</option>
+	<option value="閩南建築專用區">閩南建築專用區</option>
+	<option value="墳墓用地">墳墓用地</option>
+	<option value="廣場用地">廣場用地</option>
+	<option value="廣場兼停車場用地">廣場兼停車場用地</option>
+	<option value="鄰里公園兼兒童遊樂場">鄰里公園兼兒童遊樂場</option>
+	<option value="養生照護專用區">養生照護專用區</option>
+	<option value="學校用地">學校用地</option>
+	<option value="機關用地">機關用地</option>
+	<option value="環保用地專用區">環保用地專用區</option>
+	<option value="殯葬設施用地">殯葬設施用地</option>
+	<option value="轉運站用地">轉運站用地</option>
+	<option value="醫療用地">醫療用地</option>
+	<option value="體育場用地">體育場用地</option>
+</select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 center">
+                            <input id="btnZoom6Query" type="button" value="查詢" onclick="QueryZoom6();" />
+                            <input id="btnZoom6Clear" type="button" value="清除" onclick="ClearZoom6();" />
+                        </div>
+                    </div>
+                </div>
+                <div id="zoom6Result" class="querymenuresult"></div>
+            </div>
+            <div id="zoom7Div" class="hiddenDiv">
+                <div class="gcontainer">
+                    <div class="row">
+                        <div class="col-4 right">
+                            坐標系統：
+                        </div>
+                        <div class="col-8">
+                            <select id="selZoom7CoordSys" class="width100p">
+                                <option value="97">Twd97坐標</option>
+                                <option value="84">經緯度坐標</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-4 right">
+                            X坐標：
+                        </div>
+                        <div class="col-8">
+                            <input id="txtZoom7X" type="text" class="width100p" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-4 right">
+                            Y坐標：
+                        </div>
+                        <div class="col-8">
+                            <input id="txtZoom7Y" type="text" class="width100p" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 center">
+                            <input id="btnZoom7Query" type="button" value="查詢" onclick="QueryZoom7();" />
+                            <input id="btnZoom7Clear" type="button" value="清除" onclick="ClearZoom7();" />
+                        </div>
+                    </div>
+                </div>
+                <div id="zoom7Result" class="querymenuresult"></div>
+
+            </div>
+        </div>
+    </div>
+
+    <div off-canvas="sb-2 right overlay sb-width-wide">
+        <div class="panel-title">圖層設定</div>
+        <a href="javascript:;" data-rel="close" class="panel-close-button close-any" title="關閉">
+            <img src="Images/remove_24.png" alt="關閉" /></a>
+        <div class="panel-sbody">
+            <div id="layerList" class="layerList"></div>
+            <div id="layerListAll"></div>
+            <span id="layers_result"></span>
+        </div>
+    </div>
+
+    <div off-canvas="sb-3 right overlay sb-width-wide">
+        <div class="panel-title">距離量測</div>
+        <a href="javascript:;" data-rel="close" class="panel-close-button close-any" title="關閉">
+            <img src="Images/remove_24.png" alt="關閉" /></a>
+        <div class="panel-sbody">
+            <div class="measure_button" id="area_div" onclick="startMeasArea()">
+                <button class="groupbutton" id="areaid" data-dojo-type="dijit/form/ToggleButton" data-dojo-props="iconClass:'mareaIcon',showLabel:false,checked: false">
+                    多邊形
+                </button>
+                多邊形
+            </div>
+            <div class="measure_button" id="rectangle_div" onclick="startMeasRect()">
+                <button class="groupbutton" id="rectangleid" data-dojo-type="dijit/form/ToggleButton" data-dojo-props="iconClass:'mrectangleIcon',showLabel:false, checked: false">
+                    矩形
+                </button>
+                矩形  
+            </div>
+            <div class="measure_button" id="distance_div" onclick="startMeasPolyline()">
+                <button class="groupbutton" id="distanceid" data-dojo-type="dijit/form/ToggleButton" data-dojo-props="iconClass:'mdistanceIcon',showLabel:false, checked: false">
+                    線段
+                </button>
+                線段           
+            </div>
+            <div class="measure_button" id="xy_div" onclick="startIdenXY()">
+                <button class="groupbutton" id="xyid" data-dojo-type="dijit/form/ToggleButton" data-dojo-props="iconClass:'mxyIcon',showLabel:false, checked: false">
+                    點坐標
+                </button>
+
+                點坐標
+            </div>
+            <select id="selMeasurementUnit" data-dojo-type="dijit/form/Select" style="width: 85px; color: black; display: none;">
+            </select>
+            <br />
+            <br />
+            <div>測量結果：</div>
+            <div id="measurement_result" class="result_message_1"></div>
+        </div>
+    </div>
+
+    <div id="c" off-canvas="sb-4 right overlay sb-width-wide">
+        <div class="panel-title" id="identify_title">查詢</div>
+        <a href="javascript:;" data-rel="close" class="panel-close-button close-any" title="關閉">
+            <img src="Images/remove_24.png" alt="關閉" /></a>
+        <div class="panel-body">
+            <br />
+            <div id="identify_result">
+            </div>
+        </div>
+    </div>
+
+    <div id="div_backResult" style="width: 50px; height: 50px; position: fixed; right: 10px; bottom: 5px; z-index: 1000; border: 1px solid #000000; border-radius: 5px; background: #ff6a00; text-align: center; visibility: hidden;">
+        <a id="backResult" style="color: #ffffff; font-size: 18px;">查詢結果</a>
+    </div>
+
+    <script src="js/slidebars.js"></script>
+</body>
+</html>
