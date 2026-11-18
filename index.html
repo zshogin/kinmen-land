@@ -51,7 +51,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
   <!-- Apache ECharts -->
-  <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+  <script src="/echarts.min.js"></script>
 
   <style>
     body, html { height: 100%; margin: 0; padding: 0; overflow: hidden; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Microsoft JhengHei", sans-serif; }
@@ -780,8 +780,12 @@
         <button onclick="toggleBufferTool()" class="ml-2 text-slate-400 hover:text-white p-1" title="結束環域模式"><i class="fa-solid fa-xmark"></i></button>
       </div>
 
-      <!-- 地圖浮動專用工具列 (CAD匯出 + 分割合併模擬 + 環域分析 + 現地 GPS 定位) -->
+      <!-- 地圖浮動專用工具列 (10年地價走勢 + 分割合併模擬 + CAD匯出 + 環域分析 + 現地 GPS 定位) -->
       <div class="absolute bottom-20 right-3 z-[1000] flex flex-col space-y-2">
+        <button onclick="openLandValueTrendModal()" id="btnLandValueTrendTool" title="歷年公告土地現值 10 年走勢與漲跌分析 (ECharts)" 
+          class="w-10 h-10 bg-white hover:bg-slate-100 text-slate-700 hover:text-amber-600 rounded-xl shadow-lg border border-slate-200 flex items-center justify-center transition active:scale-95">
+          <i class="fa-solid fa-chart-line text-base text-amber-600"></i>
+        </button>
         <button onclick="openSubdivisionModal()" id="btnSubdivisionTool" title="宗地分割與合併模擬器 (地籍切分/鄰地聯集/法規檢核/CAD匯出)" 
           class="w-10 h-10 bg-white hover:bg-slate-100 text-slate-700 hover:text-teal-600 rounded-xl shadow-lg border border-slate-200 flex items-center justify-center transition active:scale-95">
           <i class="fa-solid fa-scissors text-base text-teal-600"></i>
@@ -1014,6 +1018,10 @@
       <div class="bg-slate-50 border-t border-slate-200 px-4 py-2 flex justify-between items-center text-[11px] text-slate-500">
         <span>坐標: <span id="cardCoords">--</span></span>
         <div class="flex items-center space-x-1.5">
+          <button onclick="openLandValueTrendModal()" class="px-2 py-1 bg-amber-600 hover:bg-amber-700 text-white rounded font-medium text-xs flex items-center space-x-1 shadow-sm transition" title="歷年公告土地現值 10 年走勢與地價變動預測">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>10年現值走勢</span>
+          </button>
           <button onclick="openSubdivisionModal()" class="px-2 py-1 bg-teal-600 hover:bg-teal-700 text-white rounded font-medium text-xs flex items-center space-x-1 shadow-sm transition" title="宗地分割與合併模擬 (切分計算/鄰地合併/法規檢核)">
             <i class="fa-solid fa-scissors"></i>
             <span>分割/合併</span>
@@ -3926,6 +3934,260 @@
       }
     }
 
+    // =========================================================================
+    // 歷年公告土地現值 10 年走勢與地價變動預測 (10-Year Land Value Trends Engine)
+    // =========================================================================
+    let landValueTrendChartInstance = null;
+    let currentTrendData = null;
+    let currentTrendUnit = 'sqm'; // 'sqm' or 'wan_ping'
+
+    function openLandValueTrendModal() {
+      const modal = document.getElementById('landValueTrendModal');
+      if (modal) modal.classList.remove('hidden');
+      fetchAndRenderLandValueTrends();
+    }
+
+    function closeLandValueTrendModal() {
+      const modal = document.getElementById('landValueTrendModal');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    function setTrendChartUnit(unit) {
+      currentTrendUnit = unit;
+      const btnSqm = document.getElementById('btnUnitSqm');
+      const btnWanPing = document.getElementById('btnUnitWanPing');
+
+      if (unit === 'sqm') {
+        if (btnSqm) btnSqm.className = 'px-2.5 py-1 rounded-md font-bold bg-white text-slate-900 shadow-xs transition';
+        if (btnWanPing) btnWanPing.className = 'px-2.5 py-1 rounded-md font-medium text-slate-500 hover:text-slate-800 transition';
+      } else {
+        if (btnSqm) btnSqm.className = 'px-2.5 py-1 rounded-md font-medium text-slate-500 hover:text-slate-800 transition';
+        if (btnWanPing) btnWanPing.className = 'px-2.5 py-1 rounded-md font-bold bg-white text-slate-900 shadow-xs transition';
+      }
+
+      if (currentTrendData) {
+        renderLandValueEChart(currentTrendData);
+      }
+    }
+
+    async function fetchAndRenderLandValueTrends() {
+      const t = currentSelectedTarget || currentCadTarget || {
+        title: '金寧鄉 赤岑段 165地號',
+        town: '金寧鄉',
+        section: '赤岑段',
+        number: '165',
+        unit_price_sqm: 5200
+      };
+
+      const town = t.town || '金寧鄉';
+      const section = t.section || '赤岑段';
+      const number = t.number || '165';
+      const basePrice = t.unit_price_sqm || 5200;
+
+      try {
+        const resp = await fetch(`/api/v1/land-value/historical-trends?town=${encodeURIComponent(town)}&section=${encodeURIComponent(section)}&number=${encodeURIComponent(number)}&base_price_sqm=${basePrice}`);
+        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+        const data = await resp.json();
+        currentTrendData = data;
+
+        // Update target title & current value
+        const titleEl = document.getElementById('trendTargetTitle');
+        const curValEl = document.getElementById('trendCurrentVal');
+        const badge10y = document.getElementById('trend10yGrowthBadge');
+        const badgeCagr = document.getElementById('trendCagrBadge');
+
+        if (titleEl) titleEl.innerText = data.target.title;
+        if (curValEl) curValEl.innerText = `114年當期現值: NT$ ${data.target.current_val_sqm.toLocaleString()} 元/㎡ (約 ${data.target.current_val_wan_ping} 萬/坪)`;
+        if (badge10y) badge10y.innerText = `10年累積 +${data.summary_metrics.total_growth_percent}%`;
+        if (badgeCagr) badgeCagr.innerText = `CAGR ${data.summary_metrics.cagr_percent}%`;
+
+        // Update 4 summary cards
+        const cardDiffWanPing = document.getElementById('trendCardDiffWanPing');
+        const cardDiffSqm = document.getElementById('trendCardDiffSqm');
+        const cardCagr = document.getElementById('trendCardCagr');
+        const card3y = document.getElementById('trendCard3yGrowth');
+        const cardFcVal = document.getElementById('trendCardForecastVal');
+        const cardFcGr = document.getElementById('trendCardForecastGrowth');
+
+        if (cardDiffWanPing) cardDiffWanPing.innerText = `+${data.summary_metrics.total_diff_wan_ping} 萬/坪`;
+        if (cardDiffSqm) cardDiffSqm.innerText = `+${data.summary_metrics.total_diff_sqm.toLocaleString()} 元/㎡`;
+        if (cardCagr) cardCagr.innerText = `${data.summary_metrics.cagr_percent}% / 年`;
+        if (card3y) card3y.innerText = `+${data.summary_metrics.recent_3y_growth_percent}%`;
+        if (cardFcVal) cardFcVal.innerText = `${data.summary_metrics.forecast_115.forecast_sqm.toLocaleString()} 元/㎡`;
+        if (cardFcGr) cardFcGr.innerText = `預估年調 +${data.summary_metrics.forecast_115.forecast_growth_percent}%`;
+
+        // Render Township ranking grid
+        const rankGrid = document.getElementById('trendTownshipRankingGrid');
+        if (rankGrid) {
+          rankGrid.innerHTML = data.township_comparisons.map(tc => `
+            <div class="p-2.5 rounded-xl border text-center transition ${tc.is_current ? 'bg-amber-50/90 border-amber-300 ring-1 ring-amber-400' : 'bg-slate-50 border-slate-200'}">
+              <span class="text-[11px] font-bold block ${tc.is_current ? 'text-amber-900' : 'text-slate-700'}">${tc.town}</span>
+              <div class="text-xs font-black font-mono mt-0.5 ${tc['10y_growth_percent'] > 40 ? 'text-rose-600' : 'text-emerald-700'}">+${tc['10y_growth_percent']}%</div>
+              <span class="text-[10px] text-slate-400 font-mono block">CAGR ${tc.cagr_percent}%</span>
+            </div>
+          `).join('');
+        }
+
+        // Render Table Body
+        const tbody = document.getElementById('trendHistoryTableBody');
+        if (tbody) {
+          tbody.innerHTML = data.time_series.map(ts => `
+            <tr class="hover:bg-slate-50 transition">
+              <td class="p-2 font-bold text-slate-800">${ts.roc_year} 年</td>
+              <td class="p-2 text-slate-500">${ts.ad_year}</td>
+              <td class="p-2 font-bold text-amber-700">${ts.announced_current_val_sqm.toLocaleString()}</td>
+              <td class="p-2 text-slate-700 font-medium">${ts.announced_current_wan_ping}</td>
+              <td class="p-2 font-bold ${ts.growth_rate_percent > 5 ? 'text-rose-600' : 'text-emerald-600'}">+${ts.growth_rate_percent}%</td>
+              <td class="p-2 text-slate-600">${ts.announced_land_val_sqm.toLocaleString()}</td>
+              <td class="p-2 text-slate-500">${ts.township_avg_sqm.toLocaleString()}</td>
+              <td class="p-2 text-slate-400">${ts.county_avg_sqm.toLocaleString()}</td>
+            </tr>
+          `).join('');
+        }
+
+        // Render ECharts
+        setTimeout(() => {
+          renderLandValueEChart(data);
+        }, 80);
+
+      } catch (err) {
+        console.error('Failed to fetch land value trends:', err);
+      }
+    }
+
+    function renderLandValueEChart(data) {
+      const dom = document.getElementById('landValueTrendChart');
+      if (!dom || typeof echarts === 'undefined') return;
+
+      if (!landValueTrendChartInstance) {
+        landValueTrendChartInstance = echarts.init(dom);
+        window.addEventListener('resize', () => {
+          if (landValueTrendChartInstance) landValueTrendChartInstance.resize();
+        });
+      }
+
+      const isWanPing = (currentTrendUnit === 'wan_ping');
+      const unitLabel = isWanPing ? '萬/坪' : '元/㎡';
+
+      // 105 to 114 years
+      const xLabels = data.time_series.map(d => `${d.roc_year}年`);
+      xLabels.push(`${data.summary_metrics.forecast_115.roc_year}年 (預估)`);
+
+      const parcelValSeries = data.time_series.map(d => isWanPing ? d.announced_current_wan_ping : d.announced_current_val_sqm);
+      const forecastVal = isWanPing ? data.summary_metrics.forecast_115.forecast_wan_ping : data.summary_metrics.forecast_115.forecast_sqm;
+      // Complete series including forecast
+      const parcelFullSeries = [...parcelValSeries, forecastVal];
+
+      const landValSeries = data.time_series.map(d => isWanPing ? Math.round(d.announced_land_val_ping / 10000 * 100) / 100 : d.announced_land_val_sqm);
+      const townAvgSeries = data.time_series.map(d => isWanPing ? Math.round(d.township_avg_sqm / 0.3025 / 10000 * 100) / 100 : d.township_avg_sqm);
+      const countyAvgSeries = data.time_series.map(d => isWanPing ? Math.round(d.county_avg_sqm / 0.3025 / 10000 * 100) / 100 : d.county_avg_sqm);
+
+      const option = {
+        backgroundColor: 'transparent',
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: { type: 'cross', label: { backgroundColor: '#334155' } },
+          formatter: function(params) {
+            let html = `<div class="font-bold text-xs pb-1 mb-1 border-b border-slate-700 text-white">${params[0].axisValue}</div>`;
+            params.forEach(p => {
+              html += `<div class="flex justify-between items-center space-x-3 text-[11px] py-0.5">
+                <span style="color: ${p.color};">${p.marker} ${p.seriesName}:</span>
+                <span class="font-mono font-bold text-white">${p.value} ${unitLabel}</span>
+              </div>`;
+            });
+            return html;
+          }
+        },
+        grid: {
+          top: '12%',
+          left: '3%',
+          right: '4%',
+          bottom: '8%',
+          containLabel: true
+        },
+        xAxis: {
+          type: 'category',
+          data: xLabels,
+          axisLine: { lineStyle: { color: '#cbd5e1' } },
+          axisLabel: { color: '#64748b', fontSize: 10, fontWeight: 500 }
+        },
+        yAxis: {
+          type: 'value',
+          name: unitLabel,
+          nameTextStyle: { color: '#94a3b8', fontSize: 10 },
+          splitLine: { lineStyle: { color: '#f1f5f9', type: 'dashed' } },
+          axisLabel: { color: '#64748b', fontSize: 10 }
+        },
+        series: [
+          {
+            name: '本筆公告土地現值',
+            type: 'line',
+            data: parcelFullSeries,
+            smooth: true,
+            symbol: 'circle',
+            symbolSize: 6,
+            itemStyle: { color: '#f59e0b' },
+            lineStyle: { width: 3.5, color: '#f59e0b' },
+            areaStyle: {
+              color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                { offset: 0, color: 'rgba(245, 158, 11, 0.35)' },
+                { offset: 1, color: 'rgba(245, 158, 11, 0.02)' }
+              ])
+            }
+          },
+          {
+            name: '本筆公告地價',
+            type: 'line',
+            data: landValSeries,
+            step: 'start',
+            symbol: 'square',
+            symbolSize: 5,
+            itemStyle: { color: '#059669' },
+            lineStyle: { width: 2, color: '#059669', type: 'solid' }
+          },
+          {
+            name: `${data.target.town}平均`,
+            type: 'line',
+            data: townAvgSeries,
+            smooth: true,
+            symbol: 'none',
+            itemStyle: { color: '#0284c7' },
+            lineStyle: { width: 2, color: '#0284c7', type: 'dashed' }
+          },
+          {
+            name: '全縣平均',
+            type: 'line',
+            data: countyAvgSeries,
+            smooth: true,
+            symbol: 'none',
+            itemStyle: { color: '#94a3b8' },
+            lineStyle: { width: 1.5, color: '#94a3b8', type: 'dotted' }
+          }
+        ]
+      };
+
+      landValueTrendChartInstance.setOption(option, true);
+    }
+
+    function exportTrendChartImage() {
+      if (!landValueTrendChartInstance) {
+        alert('圖表尚未初始化完成');
+        return;
+      }
+      const dataUrl = landValueTrendChartInstance.getDataURL({
+        type: 'png',
+        pixelRatio: 2,
+        backgroundColor: '#ffffff'
+      });
+      const a = document.createElement('a');
+      a.href = dataUrl;
+      const t = currentTrendData ? currentTrendData.target : { title: 'Kinmen' };
+      a.download = `${(t.title || 'Kinmen').replace(/\s+/g, '_')}_歷年地價現值10年走勢圖.png`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+
     // Report Modal Logic
     function openPrintReportModal() {
       const t = currentSelectedTarget;
@@ -5093,6 +5355,156 @@
           <button onclick="exportSubdivisionDxf()" id="btnSubExportDxf" class="px-4 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg font-bold shadow flex items-center space-x-1.5 transition">
             <i class="fa-solid fa-download"></i>
             <span>匯出分割 CAD (DXF)</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 歷年公告土地現值 10 年走勢與地價變動預測模態框 (ECharts) -->
+  <div id="landValueTrendModal" class="fixed inset-0 z-50 bg-slate-900/75 backdrop-blur-sm hidden overflow-y-auto flex items-center justify-center p-2 sm:p-4">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-4xl w-full flex flex-col overflow-hidden border border-slate-200 max-h-[92vh]">
+      <!-- 標頭 -->
+      <div class="bg-gradient-to-r from-slate-900 via-amber-950 to-slate-900 text-white px-6 py-4 flex justify-between items-center border-b border-amber-800/60 shrink-0">
+        <div class="flex items-center space-x-3">
+          <div class="w-9 h-9 rounded-xl bg-amber-600 flex items-center justify-center text-white shadow-md">
+            <i class="fa-solid fa-chart-line text-base text-amber-100"></i>
+          </div>
+          <div>
+            <div class="font-bold text-sm tracking-wide flex items-center space-x-2">
+              <span>歷年公告土地現值 10 年走勢與地價變動預測</span>
+              <span class="text-[10px] bg-amber-500/30 text-amber-300 border border-amber-400/40 px-2 py-0.5 rounded-full font-mono font-semibold">ECharts 10Y Trend</span>
+            </div>
+            <div class="text-[10px] text-amber-200/80">民國 105 ~ 114 年時間序列 · 金門五大鄉鎮調幅對比 · AI 115 年地價預測</div>
+          </div>
+        </div>
+        <button onclick="closeLandValueTrendModal()" class="text-slate-400 hover:text-white p-1">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <!-- 標的宗地摘要條 -->
+      <div class="bg-amber-50/70 border-b border-amber-100 px-6 py-2.5 flex flex-wrap justify-between items-center text-xs shrink-0">
+        <div class="flex items-center space-x-3">
+          <span class="font-bold text-slate-900 text-sm" id="trendTargetTitle">金寧鄉 赤岑段 165地號</span>
+          <span class="px-2 py-0.5 bg-amber-100 text-amber-800 rounded font-semibold text-[11px]" id="trendCurrentVal">114年當期現值: NT$ 5,200/㎡</span>
+        </div>
+        <div class="flex items-center space-x-2 text-xs">
+          <span class="px-2.5 py-0.5 bg-rose-600 text-white font-bold rounded-full font-mono shadow-sm" id="trend10yGrowthBadge">10年累積 +48.2%</span>
+          <span class="px-2.5 py-0.5 bg-emerald-700 text-white font-bold rounded-full font-mono shadow-sm" id="trendCagrBadge">CAGR 4.47%</span>
+        </div>
+      </div>
+
+      <!-- 滾動內容本體 -->
+      <div class="p-6 space-y-4 overflow-y-auto bg-slate-50 text-xs">
+        
+        <!-- 四大核心財務/地價成長指標卡 -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
+            <span class="text-slate-400 text-[10px] block font-semibold">10 年每坪增值</span>
+            <div class="font-black text-slate-800 text-sm font-mono mt-0.5" id="trendCardDiffWanPing">+5.59 萬/坪</div>
+            <span class="text-rose-600 text-[10px] font-bold" id="trendCardDiffSqm">+1,691 元/㎡</span>
+          </div>
+          <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
+            <span class="text-slate-400 text-[10px] block font-semibold">年均複合成長率 (CAGR)</span>
+            <div class="font-black text-slate-800 text-sm font-mono mt-0.5" id="trendCardCagr">4.47% / 年</div>
+            <span class="text-emerald-600 text-[10px] font-bold">高於全縣平均 3.3%</span>
+          </div>
+          <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
+            <span class="text-slate-400 text-[10px] block font-semibold">近 3 年漲幅 (大橋紅利)</span>
+            <div class="font-black text-slate-800 text-sm font-mono mt-0.5" id="trendCard3yGrowth">+10.19%</div>
+            <span class="text-teal-600 text-[10px] font-bold">111~114 年快速增值期</span>
+          </div>
+          <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
+            <span class="text-slate-400 text-[10px] block font-semibold">AI 115 年預測現值</span>
+            <div class="font-black text-amber-700 text-sm font-mono mt-0.5" id="trendCardForecastVal">5,428 元/㎡</div>
+            <span class="text-amber-600 text-[10px] font-bold" id="trendCardForecastGrowth">預估年調 +4.39%</span>
+          </div>
+        </div>
+
+        <!-- ECharts 圖表區塊 -->
+        <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm space-y-3">
+          <div class="flex flex-wrap justify-between items-center gap-2">
+            <div class="font-bold text-slate-800 text-xs flex items-center space-x-1.5">
+              <i class="fa-solid fa-chart-area text-amber-600"></i>
+              <span>10 年公告現值與公告地價時間序列曲線</span>
+            </div>
+
+            <!-- 控制項：單位切換與基準對比線開關 -->
+            <div class="flex items-center space-x-2 text-[11px]">
+              <div class="bg-slate-100 p-0.5 rounded-lg flex border border-slate-200">
+                <button onclick="setTrendChartUnit('sqm')" id="btnUnitSqm" class="px-2.5 py-1 rounded-md font-bold bg-white text-slate-900 shadow-xs transition">元/㎡</button>
+                <button onclick="setTrendChartUnit('wan_ping')" id="btnUnitWanPing" class="px-2.5 py-1 rounded-md font-medium text-slate-500 hover:text-slate-800 transition">萬/坪</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- ECharts 渲染容器 -->
+          <div id="landValueTrendChart" class="w-full h-80 rounded-lg"></div>
+
+          <!-- 圖例自訂說明 -->
+          <div class="flex flex-wrap items-center justify-center gap-4 text-[11px] text-slate-600 pt-1 border-t border-slate-100 font-medium">
+            <span class="flex items-center"><span class="w-3 h-1.5 rounded-full bg-amber-500 mr-1.5"></span>本筆宗地公告現值</span>
+            <span class="flex items-center"><span class="w-3 h-1.5 rounded-full bg-emerald-600 mr-1.5"></span>本筆公告地價</span>
+            <span class="flex items-center"><span class="w-3 h-1.5 rounded-full bg-sky-500 mr-1.5"></span>金寧鄉平均基準</span>
+            <span class="flex items-center"><span class="w-3 h-1.5 rounded-full bg-slate-400 mr-1.5"></span>全縣平均基準</span>
+            <span class="flex items-center"><span class="w-3 h-1.5 rounded-full bg-purple-500 mr-1.5"></span>AI 115年趨勢預測 (虛線)</span>
+          </div>
+        </div>
+
+        <!-- 金門五大鄉鎮 10 年漲幅對比與分析 -->
+        <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm space-y-3">
+          <div class="font-bold text-slate-800 text-xs flex items-center space-x-1.5">
+            <i class="fa-solid fa-ranking-star text-amber-600"></i>
+            <span>金門全縣五大鄉鎮 10 年累積漲幅排序列</span>
+          </div>
+
+          <div class="grid grid-cols-2 sm:grid-cols-6 gap-2" id="trendTownshipRankingGrid">
+            <!-- 動態注入各鄉鎮卡片 -->
+          </div>
+        </div>
+
+        <!-- 歷年現值與調幅詳細歷史數據表 -->
+        <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm space-y-2">
+          <div class="flex justify-between items-center">
+            <div class="font-bold text-slate-800 text-xs flex items-center space-x-1.5">
+              <i class="fa-solid fa-table-list text-slate-600"></i>
+              <span>民國 105 ~ 114 年歷年公告現值與調幅明細清冊</span>
+            </div>
+            <span class="text-[10px] text-slate-400 font-mono">單位：新台幣 元/㎡ 及 萬元/坪</span>
+          </div>
+
+          <div class="overflow-x-auto max-h-48 border border-slate-200 rounded-lg">
+            <table class="w-full text-left text-[11px] whitespace-nowrap">
+              <thead class="bg-slate-100 text-slate-700 sticky top-0 font-semibold border-b border-slate-200">
+                <tr>
+                  <th class="p-2">年度 (民國)</th>
+                  <th class="p-2">西元年</th>
+                  <th class="p-2">公告土地現值 (元/㎡)</th>
+                  <th class="p-2">換算 (萬/坪)</th>
+                  <th class="p-2">年調幅 (%)</th>
+                  <th class="p-2">公告地價 (元/㎡)</th>
+                  <th class="p-2">鄉鎮平均 (元/㎡)</th>
+                  <th class="p-2">全縣平均 (元/㎡)</th>
+                </tr>
+              </thead>
+              <tbody id="trendHistoryTableBody" class="divide-y divide-slate-100 font-mono">
+                <!-- 動態注入資料列 -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- 底部動作列 -->
+      <div class="bg-slate-50 border-t border-slate-200 px-6 py-3 flex justify-between items-center shrink-0">
+        <span class="text-[11px] text-slate-500">金門地政雲 • 歷年地價現值大數據時間序列</span>
+        <div class="flex items-center space-x-2">
+          <button onclick="closeLandValueTrendModal()" class="px-4 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-lg font-semibold text-xs transition">關閉</button>
+          <button onclick="exportTrendChartImage()" class="px-4 py-1.5 bg-amber-600 hover:bg-amber-500 text-white rounded-lg font-bold text-xs shadow flex items-center space-x-1.5 transition">
+            <i class="fa-solid fa-image"></i>
+            <span>下載走勢圖表 (PNG)</span>
           </button>
         </div>
       </div>
